@@ -3,19 +3,13 @@ clc
 %% DESCRIPTION: 
     
 %% INPUT:
+    exp_name = "Forstmann"; % Choose the experiment. There are 3 options: Forstmann, Lexical and Mnemonic.
+    data_name = 'Forstmann'; % Three data sets: Forstmann, Lexical and Mnemnonic
+    model_index = [2 9 10 15 21 23 27]; % Indices for model that we want to run CVVB
 
-     
     
-    exp_name = "Forstmann";
-    data_name = 'Forstmann';
-    model_index = [2 9 10 15 21 23 27];
-
-    likelihood = str2func(strcat("likelihood_",exp_name,"_Hybrid")); % automatically choose the correct likelihood function
-    VB_adaptive_Initialization = str2func(strcat("VB_", exp_name, "_adaptive_Initialization")); % automatically choose the correct initialization function
-
-
 %% LOAD DATA and RANDOMLY SPLIT INTO K folds
-load(['Data/' data_name '.mat'])
+load([data_name '.mat'])
 J = length(data.RT); % number of participants
 K = 5; %number of folds
     train_ind = cell(K,J);  test_ind = cell(K,J);
@@ -93,7 +87,8 @@ else
 
 end
 %% General VB approximation Setup
-
+    likelihood = str2func(strcat("likelihood_",exp_name,"_Hybrid")); % automatically choose the correct likelihood function
+    VB_adaptive_Initialization = str2func(strcat("VB_", exp_name, "_adaptive_Initialization")); % automatically choose the correct initialization function
 % Set up the VB approximation for the chosen model 
     log_scores = zeros(K+1,M);
     VB_results = cell(K+1,M); % Store all results of VB for later analysis if needed !
@@ -262,11 +257,11 @@ for m = model_index
         end       
     end
     disp(['Average log_score = ',num2str( mean(log_scores(2:K+1,m)))]);
-    save([save_dir save_name '.mat']); 
+    save('Result.mat'); 
     % =======================================================================
 end
      
 toc
 CPUtime = toc;
-%% SAVE RESULTS
-save([save_dir save_name '.mat']); 
+
+
