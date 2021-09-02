@@ -32,7 +32,7 @@
 if exp_name == "Your_experiment"
     model{m}.dim = [3 1 2 0 1];
     D_alpha = sum(model{m}.dim);
-    model{m}.constraints = ["E" "1" "C" "0" "1"];
+    model{m}.constraints = ["3" "1" "2" "0" "1"];
     model{m}.prior_par.mu = zeros(D_alpha,1); 
     model{m}.prior_par.cov = eye(D_alpha); 
     model{m}.prior_par.v_a = 2; 
