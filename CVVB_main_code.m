@@ -21,7 +21,7 @@
     K = 5; % number of folds in CV
     
     % ------------------ VB Tuning Parameter Setting ----------------------
-    VB_settings.r = 1; % number of factors in VAFC
+    VB_settings.r = 15; % number of factors in VAFC
     VB_settings.max_iter = 10000; % the total number of iterations
     VB_settings.max_norm = 1000; 
     
