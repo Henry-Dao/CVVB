@@ -26,8 +26,8 @@
     VB_settings.max_norm = 1000; 
     
     VB_settings.I = 10; % number of Monte Carlo samples used to estimate 
-    VB_settings.window = 100;    
-    VB_settings.patience_parameter = 50;                         
+    VB_settings.window = 200;    
+    VB_settings.patience_parameter = 100;                         
     VB_settings.learning_rate.v = 0.95;     
     VB_settings.learning_rate.eps = 10^(-7);   
     VB_settings.silent = "yes"; % display the estimates at each iteration
