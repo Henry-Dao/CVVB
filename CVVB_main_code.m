@@ -92,10 +92,6 @@
             N_iter = 150; % number of iterations in PMwG to initialize VB
         end
         R = 10; % number of particles in PMwG
-        initial_MCMC.alpha = randn(D_alpha,J);
-        initial_MCMC.mu = randn(D_alpha,1); % the initial values for parameter \mu
-        initial_MCMC.sig2 = iwishrnd(eye(D_alpha),D_alpha + 10); % the initial values for \Sigma
-        initial_MCMC.a_d = 1./random('gam',1/2,1,D_alpha,1);    
 
     %=========================== CVVB FOR THE CURRENT MODEL =======================
         k = 1;
@@ -110,15 +106,48 @@
                 end
             end
                 
-            if k==1 
-                [MCMC_initial, initial_MCMC] = VB_adaptive_Initialization(model{m},train_data,initial_MCMC,N_iter,R,epsilon);
-                initial = [reshape(MCMC_initial.alpha_store,D_alpha*J,1); MCMC_initial.mu_store; log(MCMC_initial.a_d_store)];
-                lambda.mu = initial;
-                lambda.B = zeros(p1,r)/r;    lambda.B = tril(lambda.B);
-                lambda.d = 0.01*ones(p1,1);
+            if k==1
+                convergence = "no";
+                count = 1;
+                VB_settings.threshold = 1; % threshold for convergence criterion
+                while convergence == "no" && count <=5
+                    VB_settings.threshold = 1 + (count>3)*(count-3); % threshold for convergence criterion
+                    initial_MCMC.alpha = randn(D_alpha,J);
+                    initial_MCMC.mu = randn(D_alpha,1); % the initial values for parameter \mu
+                    initial_MCMC.sig2 = iwishrnd(eye(D_alpha),D_alpha + 10); % the initial values for \Sigma
+                    initial_MCMC.a_d = 1./random('gam',1/2,1,D_alpha,1); 
+                    [MCMC_initial, initial_MCMC] = VB_adaptive_Initialization(model{m},train_data,initial_MCMC,N_iter,R,epsilon);
+                    initial = [reshape(MCMC_initial.alpha_store,D_alpha*J,1); MCMC_initial.mu_store; log(MCMC_initial.a_d_store)];
+                    lambda.mu = initial;
+                    lambda.B = zeros(p1,r)/r;    lambda.B = tril(lambda.B);
+                    lambda.d = 0.01*ones(p1,1);
+                    VB_settings.initial = lambda;
+                    output = Hybrid_VAFC(model{m},train_data,@Likelihood_Hybrid,@prior_density_Hybrid,VB_settings);
+                    convergence = output.converge;
+                    count = count + 1;
+                end
+            else
+                VB_settings.threshold = 1; % threshold for convergence criterion
+                VB_settings.initial = lambda;
+                output = Hybrid_VAFC(model{m},train_data,@Likelihood_Hybrid,@prior_density_Hybrid,VB_settings);
+                count = 1;
+                while output.converge == "no" && count <=5
+                    VB_settings.threshold = 1 + (count>3)*(count-3); % threshold for convergence criterion
+                    initial_MCMC.alpha = randn(D_alpha,J);
+                    initial_MCMC.mu = randn(D_alpha,1); % the initial values for parameter \mu
+                    initial_MCMC.sig2 = iwishrnd(eye(D_alpha),D_alpha + 10); % the initial values for \Sigma
+                    initial_MCMC.a_d = 1./random('gam',1/2,1,D_alpha,1); 
+                    [MCMC_initial, initial_MCMC] = VB_adaptive_Initialization(model{m},train_data,initial_MCMC,N_iter,R,epsilon);
+                    initial = [reshape(MCMC_initial.alpha_store,D_alpha*J,1); MCMC_initial.mu_store; log(MCMC_initial.a_d_store)];
+                    lambda.mu = initial;
+                    lambda.B = zeros(p1,r)/r;    lambda.B = tril(lambda.B);
+                    lambda.d = 0.01*ones(p1,1);
+                    VB_settings.initial = lambda;
+                    output = Hybrid_VAFC(model{m},train_data,@Likelihood_Hybrid,@prior_density_Hybrid,VB_settings);
+                    convergence = output.converge;
+                    count = count + 1;
+                end                  
             end
-            VB_settings.initial = lambda;
-            output = Hybrid_VAFC(model{m},train_data,@Likelihood_Hybrid,@prior_density_Hybrid,VB_settings);
             lambda = output.lambda;
             VB_results{k,m} = output;
 

@@ -79,6 +79,7 @@ end
     lambda.B = zeros(p1,r)/r;    lambda.B = tril(lambda.B);
     lambda.d = 0.01*ones(p1,1);      
     VB_settings.initial = lambda;
+    VB_settings.threshold = 1; % threshold for convergence criterion
     
 %=========================== VB ALGORITHM ==========================
 tic

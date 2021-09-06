@@ -179,7 +179,7 @@ function output = Hybrid_VAFC(model,data,likelihood,prior_density,VB_settings)
         end 
         if (patience>patience_parameter) 
             stopping_rule = "true";
-            if std(LB_smooth((t_smooth - patience_parameter + 1): t_smooth)) > 1
+            if std(LB_smooth((t_smooth - patience_parameter + 1): t_smooth)) > VB_settings.threshold
                 disp(['    Warning: VB might not converge to a good local mode',...
                     '(Initial LB = ',num2str(round(LB(1),1), '%0.1f'),...
                     ' || max LB = ',num2str( round(max_best,1), '%0.1f'),')']);
