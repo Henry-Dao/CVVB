@@ -38,7 +38,8 @@ function output = prior_density_Hybrid(model,alpha,mu_alpha,Sigma_alpha,a)
     
 % ---------------------- gradient wrt log(a) ---------------------------
 
-    grad_loga = -0.5*v - 1./(model.prior_par.A_d.^2) + 0.5./a + model.prior_par.v_a*diag(Sigma_alpha_inv)./a;
+%     grad_loga = -0.5*v - 1./(model.prior_par.A_d.^2) + 0.5./a + model.prior_par.v_a*diag(Sigma_alpha_inv)./a;
+    grad_loga = -0.5*v - 0.5 + (1./(model.prior_par.A_d.^2))./a + model.prior_par.v_a*diag(Sigma_alpha_inv)./a;
     
     log_Jacobian = sum(log(a)); %log Jacobian of log_a_d
 
