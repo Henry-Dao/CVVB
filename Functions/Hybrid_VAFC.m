@@ -42,7 +42,7 @@ function output = Hybrid_VAFC(model,data,likelihood,prior_density,VB_settings)
     D_alpha = sum(model.dim);
     p = D_alpha*(J + 2);
     v_a = model.prior_par.v_a;
-    df = v_a + D_alpha + J - 1;
+    df = v_a + D_alpha + J + 1;
     
     v = VB_settings.learning_rate.v; eps = VB_settings.learning_rate.eps; 
     E_g2 = zeros(p*(r+2),1); E_delta2 = zeros(p*(r+2),1);
